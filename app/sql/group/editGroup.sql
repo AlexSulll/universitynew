@@ -1,0 +1,1 @@
+UPDATE oasu.group SET name_of_group = :newNameGroup, id_of_department = :newDepartmentId WHERE group_id = :groupId

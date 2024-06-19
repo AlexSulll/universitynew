@@ -1,0 +1,1 @@
+UPDATE oasu.students SET name_of_student = :newNameStudent, id_of_group = :newGroupStudentId WHERE student_id = :studentId

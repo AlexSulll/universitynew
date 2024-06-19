@@ -1,0 +1,1 @@
+UPDATE oasu.faculties SET name_faculty = :newNameFaculty WHERE faculty_id = :facultyId

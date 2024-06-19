@@ -1,0 +1,1 @@
+DELETE FROM oasu.students WHERE `student_id`= ?
