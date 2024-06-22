@@ -1,10 +1,13 @@
 <?php
+
+//require_once "bootstrap.php";
+
 header("Content-Type: application/json");
 
-//register_shutdown_function(function () {
-//    var_dump(error_get_last());
-//    die();
-//});
+register_shutdown_function(function () {
+    var_dump(error_get_last());
+    die();
+});
 
 spl_autoload_register(function ($class) {
     $patch = str_replace("\\", "/", $class.".php");

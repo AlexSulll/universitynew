@@ -3,20 +3,22 @@
 require_once "vendor/autoload.php";
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMSetup;
+use Doctrine\ORM\Tools\Setup;
 
-$connection = array(
-    "driver" => "mysql",
-    "user" => "root",
-    "password" => "passbd",
-    "host" => "127.0.0.1",
-    "port" => 3306,
-    "dbname" => "oasu"
-);
 
-$config = ORMSetup::createAttributeMetadataConfiguration(array("app/", false));
-$entityManager = EntityManager::create($connection, $config);
+function getEntityManager(): EntityManager
+{
+    $paths = array(__DIR__ . "/Entities");
 
-function getEntityManager($entityManager) {
-    return $entityManager;
+    $connection = array(
+        "driver" => "pdo_mysql",
+        "host" => "127.0.0.1",
+        "dbname" => "oasu",
+        "user" => "root",
+        "password" => "passbd",
+        "port" => 3306
+    );
+
+    $config = Setup::createAttributeMetadataConfiguration($paths, true);
+    return EntityManager::create($connection, $config);
 }

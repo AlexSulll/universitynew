@@ -1,8 +1,11 @@
 <?php
 
 namespace app\controllers;
+
 use app\dto\FacultyDto;
+use app\repository\FacultyRepository;
 use app\service\FacultyService;
+use Doctrine\ORM\EntityManager;
 
 class FacultyController {
     public FacultyService $facultyService;
@@ -12,10 +15,11 @@ class FacultyController {
         $this->facultyService = new FacultyService();
     }
 
-    /**
-     * @return array
-     */
-    public function getFacultyAll (): array {
+//    /**
+//     * @return array
+//     */
+    public function getFacultyAll()
+    {
         return $this->facultyService->getFacultyAll();
     }
 

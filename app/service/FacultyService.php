@@ -1,31 +1,59 @@
 <?php
 
 namespace app\service;
+
 use app\dto\FacultyDto;
+use app\Entities\FacultyEntity;
 use app\thesaurus\DataBase;
+use Doctrine\ORM\EntityManager;
 use PDO;
+use app\repository\FacultyRepository;
+use Doctrine\ORM\EntityRepository;
 
 class FacultyService {
 
     public PDO $connect;
+    public EntityManager $entityManager;
+    public EntityRepository $facultyRepository;
 
     public function __construct()
     {
-        $conn = new DataBase();
-        $this->connect = $conn->pdo;
+        require_once __DIR__ . "/../bootstrap.php";
+        $this->entityManager = getEntityManager();
+        $this->facultyRepository = $this->entityManager->getRepository(FacultyEntity::class);
     }
+//    public function __construct()
+//    {
+//        $conn = new DataBase();
+//        $this->connect = $conn->pdo;
+//    }
 
-    /**
-     * @return array
-     */
-    public function getFacultyAll(): array
+//    /**
+//     * @return array
+//     */
+//    public function getFacultyAll(): array
+//    {
+//
+//        $sql = file_get_contents(dirname(__DIR__) . "/sql/faculty/getFaculty.sql");
+//
+//        $getFaculties = $this->connect->query($sql);
+//        return $getFaculties->fetchAll(PDO::FETCH_ASSOC);
+//
+//    }
+
+    public function getFacultyAll()
     {
-
-        $sql = file_get_contents(dirname(__DIR__) . "/sql/faculty/getFaculty.sql");
-
-        $getFaculties = $this->connect->query($sql);
-        return $getFaculties->fetchAll(PDO::FETCH_ASSOC);
-
+        return $this->facultyRepository->findByFacultyAll();
+//        $repository = $this->entityManager->getRepository(FacultyEntity::class)->findAll();
+//        $result = [];
+//        foreach ($repository as $faculty) {
+//            $facultyDto = new FacultyDto();
+//            $facultyDto->facultyId = $faculty->getId();
+//            $facultyDto->facultyName = $faculty->getName();
+//            $result[] = $facultyDto;
+//        }
+//
+//        return $result;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\thesaurus;
+
 use Exception;
 use PDO;
 use PDOException;
