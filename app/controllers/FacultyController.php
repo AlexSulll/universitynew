@@ -58,7 +58,7 @@ class FacultyController {
         }
     }
 
-    public function editFaculty(array $request): string
+    public function editFaculty(array $request)
     {
 
         $faculties = $this->facultyService->getFacultyAll();
@@ -72,9 +72,8 @@ class FacultyController {
             if ($getFaculty) {
                 if (!array_search($request["newNameFaculty"], array_column($faculties, "facultyName"))) {
 
-                    $this->facultyService->editFaculty($facultyDto);
+                    return $this->facultyService->editFaculty($facultyDto);
 
-                    return "Успешное изменение факультета";
                 } else {
                     return "Факультет с таким названием уже существует";
                 }
@@ -86,10 +85,7 @@ class FacultyController {
         }
     }
 
-//    public function deleteFaculty (array $request) {
-//        $facultyDto = new FacultyDto();
-//        $facultyDto->facultyId = $request["facultyId"];
-//
-//        return $this->facultyService->deleteFaculty($facultyDto);
-//    }
+    public function deleteFaculty (array $request) {
+
+    }
 }

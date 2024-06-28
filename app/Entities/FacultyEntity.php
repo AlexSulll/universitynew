@@ -2,6 +2,8 @@
 
 namespace app\Entities;
 
+use Couchbase\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,6 +19,15 @@ class FacultyEntity {
     #[ORM\Column(name: "name_faculty", type: Types::STRING)]
     private string $facultyName;
 
+    #[ORM\JoinTable(name: "oasu.department")]
+    #[ORM\JoinColumn(name: "department_id", referencedColumnName: "departmentId")]
+    #[ORM\ManyToMany(targetEntity: DepartmentEntity::class)]
+    private $department;
+
+    public function __construct()
+    {
+        $this->department = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->facultyId;
@@ -27,8 +38,13 @@ class FacultyEntity {
         return $this->facultyName;
     }
 
-    public function setName(?string $newNameFaculty): void
+    public function setName(?string $newNameFaculty)
     {
         $this->facultyName = $newNameFaculty;
+    }
+
+    public function addDepartment()
+    {
+
     }
 }

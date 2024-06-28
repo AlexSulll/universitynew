@@ -2,6 +2,7 @@
 
 namespace app\repository;
 
+use app\dto\FacultyDto;
 use app\Entities\FacultyEntity;
 use Doctrine\ORM\EntityManager;
 
@@ -22,27 +23,32 @@ class FacultyRepository {
         return $faculty->getQuery()->getArrayResult();
     }
 
-    public function getFacultyId($facultyId): ?array
+    public function getFacultyId(FacultyDto $facultyDto): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $faculty = $queryBuilder->select("f")
             ->from(FacultyEntity::class, "f")
-            ->where("f.facultyId = " . $facultyId);
+            ->where("f.facultyId = " . $facultyDto->facultyId);
         return $faculty->getQuery()->getArrayResult();
     }
 
-    public function addFaculty($facultyName): void
+    public function addFaculty($facultyDto): void
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-//        $queryBuilder->add();
+        $newFaculty = new FacultyEntity;
+        $newFaculty->setName($facultyDto->facultyName);
+        $this->entityManager->persist($newFaculty);
+        $this->entityManager->flush();
     }
 
-    public function editFaculty($facultyDto): void
+    public function editFaculty(FacultyDto $facultyDto)
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $queryBuilder->update(FacultyEntity::class, "f")
-            ->set("f.facultyName", $facultyDto->facultyName)
-            ->where($queryBuilder->expr()->eq("f.facultyId", $facultyDto->facultyId));
+        $faculty = $this->entityManager->find(FacultyEntity::class, $facultyDto->facultyId);
+        $faculty->setName($facultyDto->facultyName);
+
+        $this->entityManager->persist($faculty);
+        $this->entityManager->flush();
+
+        return $faculty->getName();
     }
 
 }

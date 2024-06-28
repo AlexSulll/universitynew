@@ -23,7 +23,7 @@ class FacultyService {
 
     public function getFacultyId(FacultyDto $facultyDto): ?array
     {
-        $faculty = $this->facultyRepository->getFacultyId($facultyDto->facultyId);
+        $faculty = $this->facultyRepository->getFacultyId($facultyDto);
 
         if ($faculty) {
             return $faculty;
@@ -34,13 +34,13 @@ class FacultyService {
 
     public function addFaculty(FacultyDto $facultyDto): string
     {
-        $this->facultyRepository->addFaculty($facultyDto->facultyName);
+        $this->facultyRepository->addFaculty($facultyDto);
         return "Успешное добавление факультета";
     }
 
     public function editFaculty(FacultyDto $facultyDto)
     {
-        $this->facultyRepository->editFaculty($facultyDto);
+        return $this->facultyRepository->editFaculty($facultyDto);
     }
 
     public function deleteFaculty (FacultyDto $facultyDto) {

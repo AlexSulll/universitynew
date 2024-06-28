@@ -13,24 +13,15 @@ class DepartmentEntity {
     #[ORM\Id]
     #[ORM\Column(name: "department_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $id;
+    private int $departmentId;
 
     #[ORM\Column(name: "name_of_department", type: Types::STRING)]
     private string $nameDepartment;
-
-    #[ORM\JoinTable(name: "")]
-    #[ORM\JoinColumn(name: "", referencedColumnName: "")]
-    #[ORM\InverseJoinColumn(name: "", referencedColumnName: "")]
-    #[ORM\ManyToMany(targetEntity: FacultyEntity::class)]
-    private Collection $departments;
-    public function __construct()
-    {
-        $this->departments = new ArrayCollection();
-    }
-
+    #[ORM\ManyToOne(targetEntity: FacultyEntity::class)]
+    private $faculty;
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->departmentId;
     }
 
     public function getNameDepartment(): ?string
@@ -43,13 +34,4 @@ class DepartmentEntity {
         $this->nameDepartment = $newNameDepartment;
     }
 
-    public function getDepartments(): Collection
-    {
-        return $this->departments;
-    }
-
-    public function setDepartments(DepartmentEntity $departments): void
-    {
-        $this->departments->add($departments);
-    }
 }
