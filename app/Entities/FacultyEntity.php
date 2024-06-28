@@ -12,23 +12,23 @@ class FacultyEntity {
     #[ORM\Id]
     #[ORM\Column(name: "faculty_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $id;
+    private int $facultyId;
 
     #[ORM\Column(name: "name_faculty", type: Types::STRING)]
-    private string $nameFaculty;
+    private string $facultyName;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->facultyId;
     }
 
     public function getName(): ?string
     {
-        return $this->nameFaculty;
+        return $this->facultyName;
     }
 
     public function setName(?string $newNameFaculty): void
     {
-        $this->nameFaculty = $newNameFaculty;
+        $this->facultyName = $newNameFaculty;
     }
 }

@@ -4,30 +4,45 @@ namespace app\repository;
 
 use app\Entities\FacultyEntity;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
-class FacultyRepository extends EntityRepository
-{
+class FacultyRepository {
 
-//    public EntityManager $entityManager;
-//    public function __construct(EntityManagerInterface $em, $class)
-//    {
-//        parent::__construct($em, $class);
-//    }
+    public EntityManager $entityManager;
 
-//    public function getFacultyAll(): array
-//    {
-//        $connection = $this->_em->createQueryBuilder();
-//        $connection->select("f")
-//            ->from(FacultyEntity::class, "f");
-//        return $connection->getQuery()->getArrayResult();
-//    }
-    public function findByFacultyAll(): array
+    public function __construct()
     {
-        $connection = $this->_em->createQueryBuilder();
-        $faculties = $connection->select("name_faculty")
-            ->from(FacultyEntity::class, "f");
-        return $faculties->getQuery()->getArrayResult();
+        require_once dirname(__DIR__) . "/bootstrap.php";
+        $this->entityManager = getEntityManager();
     }
+    public function getFacultyAll(): ?array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $faculty = $queryBuilder->select("f")
+            ->from(FacultyEntity::class, "f");
+        return $faculty->getQuery()->getArrayResult();
+    }
+
+    public function getFacultyId($facultyId): ?array
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $faculty = $queryBuilder->select("f")
+            ->from(FacultyEntity::class, "f")
+            ->where("f.facultyId = " . $facultyId);
+        return $faculty->getQuery()->getArrayResult();
+    }
+
+    public function addFaculty($facultyName): void
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+//        $queryBuilder->add();
+    }
+
+    public function editFaculty($facultyDto): void
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->update(FacultyEntity::class, "f")
+            ->set("f.facultyName", $facultyDto->facultyName)
+            ->where($queryBuilder->expr()->eq("f.facultyId", $facultyDto->facultyId));
+    }
+
 }
