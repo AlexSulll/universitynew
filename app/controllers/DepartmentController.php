@@ -48,6 +48,10 @@ class DepartmentController
         }
     }
 
+    /**
+     * @param array $request
+     * @return array|string
+     */
     public function getDepartmentByFacultyId(array $request): array | string
     {
         $departmentDto = new DepartmentDto();
@@ -55,24 +59,23 @@ class DepartmentController
         if (isset($request["facultyId"])) {
             $facultyDto = new FacultyDto();
             $facultyDto->facultyId = $request["facultyId"];
-            $faculty = $this->facultyService->getFacultyId($facultyDto);
-            if ($faculty) {
+            if ($this->facultyService->getFacultyId($facultyDto)) {
                 $departmentDto->facultyId = $request["facultyId"];
                 return $this->departmentService->getDepartmentByFacultyId($departmentDto);
             } else {
                 return "Такого факультета не существует";
             }
         } else {
-            return "Кафедр с таким факультетом не существует";
+            return "Ошибка данных";
         }
     }
 
     /**
      * @param array $request
-     * @return string|null
+     * @return string
      * @throws Exception
      */
-    public function addDepartment(array $request): ?string
+    public function addDepartment(array $request): string
     {
 
         $departmentAll = $this->departmentService->getDepartmentAll();
@@ -81,13 +84,14 @@ class DepartmentController
         $facultyDto = new FacultyDto();
 
         if (isset($request["departmentName"], $request["facultyId"])) {
-            $departmentDto->departmentName = $request["departmentName"];
-            $departmentDto->facultyId = $request["facultyId"];
-            $facultyDto->facultyId = $request["facultyId"];
-            if (preg_match("/^[А-яЁё -]*$/u", $departmentDto->departmentName) && preg_match("/^[0-9]*$/", $departmentDto->facultyId)) {
+            if (preg_match("/^[А-яЁё -]*$/u", $request["departmentName"]) && preg_match("/^[0-9]*$/", $request["facultyId"])) {
+                $departmentDto->departmentName = $request["departmentName"];
+                $departmentDto->facultyId = $request["facultyId"];
+                $facultyDto->facultyId = $request["facultyId"];
                 if (!array_search($departmentDto->departmentName, array_column($departmentAll, "departmentName"))) {
                     if ($this->facultyService->getFacultyId($facultyDto)) {
-                        return $this->departmentService->addDepartment($departmentDto);
+                        $this->departmentService->addDepartment($departmentDto);
+                        return "Успешное добавление кафедры";
                     } else {
                         return "Такой факультет не существует";
                     }
@@ -102,31 +106,44 @@ class DepartmentController
         }
     }
 
-    public function editDepartment(array $request)
+    /**
+     * @param array $request
+     * @return string
+     * @throws Exception
+     */
+    public function editDepartment(array $request): string
     {
 
-//        $faculties = $this->facultyService->getFacultyAll();
-//
-//        $facultyDto = new FacultyDto();
-//
-//        if (isset($request["facultyId"], $request["newNameFaculty"])) {
-//            $facultyDto->facultyName = $request["newNameFaculty"];
-//            $facultyDto->facultyId = $request["facultyId"];
-//            $getFaculty = $this->facultyService->getFacultyId($facultyDto);
-//            if ($getFaculty) {
-//                if (!array_search($request["newNameFaculty"], array_column($faculties, "facultyName"))) {
-//
-//                    return $this->facultyService->editFaculty($facultyDto);
-//
-//                } else {
-//                    return "Факультет с таким названием уже существует";
-//                }
-//            } else {
-//                return "Такого факультета не существует";
-//            }
-//        } else {
-//            return "Ошибка данных";
-//        }
+        $departmentAll = $this->departmentService->getDepartmentAll();
+
+        $departmentDto = new DepartmentDto();
+        $facultyDto = new FacultyDto();
+
+        if (isset($request["departmentId"], $request["newNameDepartment"], $request["newFacultyId"])) {
+            if (preg_match("/^[А-яЁё -]*$/u", $request["newNameDepartment"]) && preg_match("/^[0-9]*$/", $request["departmentId"]) && preg_match("/^[0-9]*$/", $request["newFacultyId"])) {
+                $departmentDto->departmentId = $request["departmentId"];
+                $departmentDto->departmentName = $request["newNameDepartment"];
+                $facultyDto->facultyId = $departmentDto->facultyId = $request["newFacultyId"];
+                if ($this->departmentService->getDepartmentId($departmentDto)) {
+                    if ($this->facultyService->getFacultyId($facultyDto)) {
+                        if (!array_search($departmentDto->departmentName, array_column($departmentAll, "departmentName"))) {
+                            $this->departmentService->editDepartment($departmentDto);
+                            return "Успешное изменение кафедры";
+                        } else {
+                            return "Кафедра с таким названием уже существует";
+                        }
+                    } else {
+                        return "Такого факультета не существует";
+                    }
+                } else {
+                    return "Такой кафедры не существует";
+                }
+            } else {
+                return "Ошибка при проверке данных";
+            }
+        } else {
+            return "Ошибка данных";
+        }
     }
 
     public function deleteDepartment(array $request) {

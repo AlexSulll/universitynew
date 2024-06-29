@@ -5,7 +5,6 @@ namespace app\repository;
 use app\dto\DepartmentDto;
 use app\Entities\DepartmentEntity;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Exception\ORMException;
 use Exception;
 
 class DepartmentRepository
@@ -18,6 +17,9 @@ class DepartmentRepository
         $this->entityManager = getEntityManager();
     }
 
+    /**
+     * @return array|null
+     */
     public function getDepartmentAll(): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
@@ -26,6 +28,10 @@ class DepartmentRepository
         return $departments->getQuery()->getArrayResult();
     }
 
+    /**
+     * @param DepartmentDto $departmentDto
+     * @return array|null
+     */
     public function getDepartmentId(DepartmentDto $departmentDto): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
@@ -35,6 +41,10 @@ class DepartmentRepository
         return $department->getQuery()->getArrayResult();
     }
 
+    /**
+     * @param DepartmentDto $departmentDto
+     * @return array|null
+     */
     public function getDepartmentByFacultyId(DepartmentDto $departmentDto): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
@@ -45,6 +55,8 @@ class DepartmentRepository
     }
 
     /**
+     * @param DepartmentDto $departmentDto
+     * @return void
      * @throws Exception
      */
     public function addDepartment(DepartmentDto $departmentDto): void
@@ -56,8 +68,28 @@ class DepartmentRepository
             $newDepartment->setFacultyId($departmentDto->facultyId);
             $this->entityManager->persist($newDepartment);
             $this->entityManager->flush();
-        } catch (ORMException $exception) {
-            throw new Exception("Ошибка при добавлении факультета");
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при добавлении кафедры");
+        }
+    }
+
+    /**
+     * @param DepartmentDto $departmentDto
+     * @return void
+     * @throws Exception
+     */
+    public function editDepartment(DepartmentDto $departmentDto): void
+    {
+        try {
+            $department = $this->entityManager->find(DepartmentEntity::class, $departmentDto->departmentId);
+            $department->setName($departmentDto->departmentName);
+            $department->setFacultyId($departmentDto->facultyId);
+
+            $this->entityManager->persist($department);
+            $this->entityManager->flush();
+
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при редактировании кафедры");
         }
     }
 }

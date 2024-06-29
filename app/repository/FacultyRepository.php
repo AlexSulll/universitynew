@@ -42,6 +42,8 @@ class FacultyRepository {
     }
 
     /**
+     * @param FacultyDto $facultyDto
+     * @return void
      * @throws Exception
      */
     public function addFaculty(FacultyDto $facultyDto): void
@@ -59,9 +61,11 @@ class FacultyRepository {
     }
 
     /**
+     * @param FacultyDto $facultyDto
+     * @return void
      * @throws Exception
      */
-    public function editFaculty(FacultyDto $facultyDto): ?string
+    public function editFaculty(FacultyDto $facultyDto): void
     {
         try {
             $faculty = $this->entityManager->find(FacultyEntity::class, $facultyDto->facultyId);
@@ -70,9 +74,8 @@ class FacultyRepository {
             $this->entityManager->persist($faculty);
             $this->entityManager->flush();
 
-            return $faculty->getName();
         } catch (Exception $exception) {
-            throw new Exception("Ошибка при редактировании");
+            throw new Exception("Ошибка при редактировании факультета");
         }
     }
 }

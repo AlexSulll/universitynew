@@ -42,23 +42,22 @@ class FacultyService {
 
     /**
      * @param FacultyDto $facultyDto
-     * @return string
+     * @return void
      * @throws Exception
      */
-    public function addFaculty(FacultyDto $facultyDto): string
+    public function addFaculty(FacultyDto $facultyDto): void
     {
         $this->facultyRepository->addFaculty($facultyDto);
-        return "Успешное добавление факультета";
     }
 
     /**
      * @param FacultyDto $facultyDto
-     * @return string|null
+     * @return void
      * @throws Exception
      */
-    public function editFaculty(FacultyDto $facultyDto): ?string
+    public function editFaculty(FacultyDto $facultyDto): void
     {
-        return $this->facultyRepository->editFaculty($facultyDto);
+        $this->facultyRepository->editFaculty($facultyDto);
     }
 
     public function deleteFaculty (FacultyDto $facultyDto) {

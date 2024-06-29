@@ -4,8 +4,7 @@ namespace app\controllers;
 
 use app\dto\FacultyDto;
 use app\service\FacultyService;
-use Doctrine\DBAL\Driver\PDO\Exception;
-use Doctrine\ORM\ORMException;
+use Exception;
 
 class FacultyController {
     public FacultyService $facultyService;
@@ -47,11 +46,10 @@ class FacultyController {
 
     /**
      * @param array $request
-     * @return string|null
+     * @return string
      * @throws Exception
-     * @throws ORMException
      */
-    public function addFaculty(array $request): ?string
+    public function addFaculty(array $request): string
     {
 
         $facultiesAll = $this->facultyService->getFacultyAll();
@@ -59,15 +57,16 @@ class FacultyController {
         $facultyDto = new FacultyDto();
 
         if (isset($request["facultyName"])) {
-            $facultyDto->facultyName = $request["facultyName"];
-            if (!array_search($facultyDto->facultyName, array_column($facultiesAll, "facultyName"))) {
-                if (preg_match("/^[А-яЁё -]*$/u", $facultyDto->facultyName)) {
-                    return $this->facultyService->addFaculty($facultyDto);
+            if (preg_match("/^[А-яЁё -]*$/u", $request["facultyName"])) {
+                $facultyDto->facultyName = $request["facultyName"];
+                if (!array_search($facultyDto->facultyName, array_column($facultiesAll, "facultyName"))) {
+                    $this->facultyService->addFaculty($facultyDto);
+                    return "Успешное добавление факультета";
                 } else {
-                    return "Ошибка при проверке данных";
+                    return "Факультет с таким названием уже существует";
                 }
             } else {
-                return "Факультет с таким названием уже существует";
+                return "Ошибка при проверке данных";
             }
         } else {
             return "Ошибка данных";
@@ -76,11 +75,10 @@ class FacultyController {
 
     /**
      * @param array $request
-     * @return string|null
+     * @return string
      * @throws Exception
-     * @throws ORMException
      */
-    public function editFaculty(array $request): ?string
+    public function editFaculty(array $request): string
     {
 
         $faculties = $this->facultyService->getFacultyAll();
@@ -88,19 +86,25 @@ class FacultyController {
         $facultyDto = new FacultyDto();
 
         if (isset($request["facultyId"], $request["newNameFaculty"])) {
-            $facultyDto->facultyName = $request["newNameFaculty"];
-            $facultyDto->facultyId = $request["facultyId"];
-            $getFaculty = $this->facultyService->getFacultyId($facultyDto);
-            if ($getFaculty) {
-                if (!array_search($request["newNameFaculty"], array_column($faculties, "facultyName"))) {
+            if (preg_match("/^[А-яЁё -]*$/u", $request["newNameFaculty"]) && preg_match("/^[0-9]*$/", $request["facultyId"])) {
+                $facultyDto->facultyName = $request["newNameFaculty"];
+                $facultyDto->facultyId = $request["facultyId"];
+                $getFaculty = $this->facultyService->getFacultyId($facultyDto);
+                if ($getFaculty) {
+                    if (!array_search($request["newNameFaculty"], array_column($faculties, "facultyName"))) {
 
-                    return $this->facultyService->editFaculty($facultyDto);
+                        $this->facultyService->editFaculty($facultyDto);
 
+                        return "Успешное изменение факультета";
+
+                    } else {
+                        return "Факультет с таким названием уже существует";
+                    }
                 } else {
-                    return "Факультет с таким названием уже существует";
+                    return "Такого факультета не существует";
                 }
             } else {
-                return "Такого факультета не существует";
+                return "Ошибка при проверке данных";
             }
         } else {
             return "Ошибка данных";
