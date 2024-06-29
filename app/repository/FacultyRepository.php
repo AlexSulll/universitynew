@@ -5,6 +5,7 @@ namespace app\repository;
 use app\dto\FacultyDto;
 use app\Entities\FacultyEntity;
 use Doctrine\ORM\EntityManager;
+use Exception;
 
 class FacultyRepository {
 
@@ -15,6 +16,10 @@ class FacultyRepository {
         require_once dirname(__DIR__) . "/bootstrap.php";
         $this->entityManager = getEntityManager();
     }
+
+    /**
+     * @return array|null
+     */
     public function getFacultyAll(): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
@@ -23,6 +28,10 @@ class FacultyRepository {
         return $faculty->getQuery()->getArrayResult();
     }
 
+    /**
+     * @param FacultyDto $facultyDto
+     * @return array|null
+     */
     public function getFacultyId(FacultyDto $facultyDto): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
@@ -32,23 +41,38 @@ class FacultyRepository {
         return $faculty->getQuery()->getArrayResult();
     }
 
-    public function addFaculty($facultyDto): void
+    /**
+     * @throws Exception
+     */
+    public function addFaculty(FacultyDto $facultyDto): void
     {
         $newFaculty = new FacultyEntity;
-        $newFaculty->setName($facultyDto->facultyName);
-        $this->entityManager->persist($newFaculty);
-        $this->entityManager->flush();
+
+        try {
+            $newFaculty->setName($facultyDto->facultyName);
+            $this->entityManager->persist($newFaculty);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при добавлении факультета");
+        }
+
     }
 
-    public function editFaculty(FacultyDto $facultyDto)
+    /**
+     * @throws Exception
+     */
+    public function editFaculty(FacultyDto $facultyDto): ?string
     {
-        $faculty = $this->entityManager->find(FacultyEntity::class, $facultyDto->facultyId);
-        $faculty->setName($facultyDto->facultyName);
+        try {
+            $faculty = $this->entityManager->find(FacultyEntity::class, $facultyDto->facultyId);
+            $faculty->setName($facultyDto->facultyName);
 
-        $this->entityManager->persist($faculty);
-        $this->entityManager->flush();
+            $this->entityManager->persist($faculty);
+            $this->entityManager->flush();
 
-        return $faculty->getName();
+            return $faculty->getName();
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при редактировании");
+        }
     }
-
 }

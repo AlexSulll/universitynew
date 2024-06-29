@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\dto\FacultyDto;
 use app\service\FacultyService;
+use Doctrine\DBAL\Driver\PDO\Exception;
+use Doctrine\ORM\ORMException;
 
 class FacultyController {
     public FacultyService $facultyService;
@@ -13,11 +15,18 @@ class FacultyController {
         $this->facultyService = new FacultyService();
     }
 
+    /**
+     * @return array
+     */
     public function getFacultyAll(): array
     {
         return $this->facultyService->getFacultyAll();
     }
 
+    /**
+     * @param array $request
+     * @return array|string
+     */
     public function getFacultyId(array $request): array | string
     {
 
@@ -25,18 +34,25 @@ class FacultyController {
 
         if (isset($request["facultyId"])) {
             $facultyDto->facultyId = $request["facultyId"];
-        }
-
-        $faculty = $this->facultyService->getFacultyId($facultyDto);
-
-        if ($faculty) {
-            return $faculty;
+            $faculty = $this->facultyService->getFacultyId($facultyDto);
+            if ($faculty) {
+                return $faculty;
+            } else {
+                return "Такого факультета не существует";
+            }
         } else {
-            return "Такого факультета не существует";
+            return "Ошибка данных";
         }
     }
 
-    public function addFaculty(array $request) {
+    /**
+     * @param array $request
+     * @return string|null
+     * @throws Exception
+     * @throws ORMException
+     */
+    public function addFaculty(array $request): ?string
+    {
 
         $facultiesAll = $this->facultyService->getFacultyAll();
 
@@ -54,11 +70,17 @@ class FacultyController {
                 return "Факультет с таким названием уже существует";
             }
         } else {
-            return null;
+            return "Ошибка данных";
         }
     }
 
-    public function editFaculty(array $request)
+    /**
+     * @param array $request
+     * @return string|null
+     * @throws Exception
+     * @throws ORMException
+     */
+    public function editFaculty(array $request): ?string
     {
 
         $faculties = $this->facultyService->getFacultyAll();
@@ -85,7 +107,7 @@ class FacultyController {
         }
     }
 
-    public function deleteFaculty (array $request) {
+    public function deleteFaculty(array $request) {
 
     }
 }

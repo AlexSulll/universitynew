@@ -2,8 +2,6 @@
 
 namespace app\Entities;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,22 +14,33 @@ class DepartmentEntity {
     private int $departmentId;
 
     #[ORM\Column(name: "name_of_department", type: Types::STRING)]
-    private string $nameDepartment;
-    #[ORM\ManyToOne(targetEntity: FacultyEntity::class)]
-    private $faculty;
+    private string $departmentName;
+
+    #[ORM\Column(name: "id_of_faculties", type: Types::INTEGER)]
+    private int $facultyId;
+
     public function getId(): ?int
     {
         return $this->departmentId;
     }
 
-    public function getNameDepartment(): ?string
+    public function getName(): ?string
     {
-        return $this->nameDepartment;
+        return $this->departmentName;
     }
 
-    public function setNameDepartment(?string $newNameDepartment): void
+    public function setName(?string $newDepartmentName): void
     {
-        $this->nameDepartment = $newNameDepartment;
+        $this->departmentName = $newDepartmentName;
     }
 
+    public function getFacultyId(): ?int
+    {
+        return $this->facultyId;
+    }
+
+    public function setFacultyId(?int $newFacultyId): void
+    {
+        $this->facultyId = $newFacultyId;
+    }
 }
