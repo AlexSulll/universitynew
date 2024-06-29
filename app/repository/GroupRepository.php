@@ -55,6 +55,8 @@ class GroupRepository
     }
 
     /**
+     * @param GroupDto $groupDto
+     * @return void
      * @throws Exception
      */
     public function addGroup(GroupDto $groupDto): void
@@ -72,6 +74,8 @@ class GroupRepository
     }
 
     /**
+     * @param GroupDto $groupDto
+     * @return void
      * @throws Exception
      */
     public function editGroup(GroupDto $groupDto): void
