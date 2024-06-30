@@ -4,15 +4,18 @@ namespace app\service;
 
 use app\dto\DepartmentDto;
 use app\repository\DepartmentRepository;
+use app\repository\GroupRepository;
 use Exception;
 
 class DepartmentService
 {
     public DepartmentRepository $departmentRepository;
+    public GroupRepository $groupRepository;
 
     public function __construct()
     {
         $this->departmentRepository = new DepartmentRepository();
+        $this->groupRepository = new GroupRepository();
     }
 
     /**
@@ -29,7 +32,7 @@ class DepartmentService
      */
     public function getDepartmentId(DepartmentDto $departmentDto): ?array
     {
-        return $this->departmentRepository->getDepartmentId($departmentDto);
+        return $this->departmentRepository->getDepartmentId($departmentDto->departmentId);
     }
 
     /**
@@ -38,7 +41,7 @@ class DepartmentService
      */
     public function getDepartmentByFacultyId(DepartmentDto $departmentDto): ?array
     {
-        return $this->departmentRepository->getDepartmentByFacultyId($departmentDto);
+        return $this->departmentRepository->getDepartmentByFacultyId($departmentDto->facultyId);
     }
 
     /**
@@ -59,5 +62,18 @@ class DepartmentService
     public function editDepartment(DepartmentDto $departmentDto): void
     {
         $this->departmentRepository->editDepartment($departmentDto);
+    }
+
+    /**
+     * @param DepartmentDto $departmentDto
+     * @return void
+     * @throws Exception
+     */
+    public function deleteDepartment(DepartmentDto $departmentDto): void
+    {
+        $groupsToDelete = $this->groupRepository->getGroupByDepartmentId($departmentDto->departmentId);
+        $this->groupRepository->deleteGroup($groupsToDelete);
+
+        $this->departmentRepository->deleteDepartment($departmentDto->departmentId);
     }
 }

@@ -44,8 +44,4 @@ class StudentEntity {
         $this->groupId = $newGroupId;
     }
 
-    public function removeStudent()
-    {
-
-    }
 }

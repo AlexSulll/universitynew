@@ -149,6 +149,7 @@ class StudentController
     /**
      * @param array $request
      * @return string
+     * @throws Exception
      */
     public function deleteStudent(array $request): string
     {

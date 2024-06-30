@@ -29,28 +29,28 @@ class DepartmentRepository
     }
 
     /**
-     * @param DepartmentDto $departmentDto
+     * @param int $departmentId
      * @return array|null
      */
-    public function getDepartmentId(DepartmentDto $departmentDto): ?array
+    public function getDepartmentId(int $departmentId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("d")
             ->from(DepartmentEntity::class, "d")
-            ->where("d.departmentId = " . $departmentDto->departmentId);
+            ->where("d.departmentId = " . $departmentId);
         return $department->getQuery()->getArrayResult();
     }
 
     /**
-     * @param DepartmentDto $departmentDto
+     * @param int $facultyId
      * @return array|null
      */
-    public function getDepartmentByFacultyId(DepartmentDto $departmentDto): ?array
+    public function getDepartmentByFacultyId(int $facultyId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("d")
             ->from(DepartmentEntity::class, "d")
-            ->where("d.facultyId = " . $departmentDto->facultyId);
+            ->where("d.facultyId = " . $facultyId);
         return $department->getQuery()->getArrayResult();
     }
 
@@ -90,6 +90,37 @@ class DepartmentRepository
 
         } catch (Exception $exception) {
             throw new Exception("Ошибка при редактировании кафедры");
+        }
+    }
+
+    /**
+     * @param int|array $departmentId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteDepartment(int | array $departmentId): void
+    {
+        if (!is_array($departmentId)) {
+            try {
+                $department = $this->entityManager->find(DepartmentEntity::class, $departmentId);
+
+                $this->entityManager->remove($department);
+                $this->entityManager->flush();
+
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении кафедры");
+            }
+        } else {
+            try {
+                foreach ($departmentId as $id) {
+                    $department = $this->entityManager->find(DepartmentEntity::class, $id["departmentId"]);
+
+                    $this->entityManager->remove($department);
+                }
+                $this->entityManager->flush();
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении кафедр");
+            }
         }
     }
 }

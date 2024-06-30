@@ -29,28 +29,28 @@ class StudentRepository
     }
 
     /**
-     * @param StudentDto $studentDto
+     * @param int $studentId
      * @return array|null
      */
-    public function getStudentId(StudentDto $studentDto): ?array
+    public function getStudentId(int $studentId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $student = $queryBuilder->select("s")
             ->from(StudentEntity::class, "s")
-            ->where("s.studentId = " . $studentDto->studentId);
+            ->where("s.studentId = " . $studentId);
         return $student->getQuery()->getArrayResult();
     }
 
     /**
-     * @param $studentDto
+     * @param int $groupId
      * @return array|null
      */
-    public function getStudentByGroupId($studentDto): ?array
+    public function getStudentByGroupId(int $groupId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $student = $queryBuilder->select("s")
             ->from(StudentEntity::class, "s")
-            ->where("s.groupId = " . $studentDto->groupId);
+            ->where("s.groupId = " . $groupId);
         return $student->getQuery()->getArrayResult();
     }
 
@@ -93,13 +93,34 @@ class StudentRepository
         }
     }
 
-    public function deleteStudent(StudentDto $studentDto) {
-//        $student = $this->entityManager->find(StudentEntity::class, $studentDto->studentId);
-//        $student->removeStudent();
-        $queryBuilder = $this->entityManager->createQueryBuilder();
-        $student = $queryBuilder->delete("s")
-            ->from(StudentEntity::class, "s")
-            ->where("s.studentId = " . $studentDto->studentId);
-        $student->getQuery();
+    /**
+     * @param int|array $studentId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteStudent(int | array $studentId): void
+    {
+        if (!is_array($studentId)) {
+            try {
+                $student = $this->entityManager->find(StudentEntity::class, $studentId);
+
+                $this->entityManager->remove($student);
+                $this->entityManager->flush();
+
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении студента");
+            }
+        } else {
+            try {
+                foreach ($studentId as $id) {
+                    $student = $this->entityManager->find(StudentEntity::class, $id["studentId"]);
+
+                    $this->entityManager->remove($student);
+                }
+                $this->entityManager->flush();
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении студентов");
+            }
+        }
     }
 }

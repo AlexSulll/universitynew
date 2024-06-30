@@ -146,8 +146,27 @@ class GroupController
         }
     }
 
-    public function deleteGroup()
+    /**
+     * @param array $request
+     * @return string
+     * @throws Exception
+     */
+    public function deleteGroup(array $request): string
     {
+        $groupAll = $this->groupService->getGroupAll();
 
+        $groupDto = new GroupDto();
+
+        if (isset($request["groupId"])) {
+            $groupDto->groupId = $request["groupId"];
+            if (array_search($groupDto->groupId, array_column($groupAll, "groupId"))) {
+                 $this->groupService->deleteGroup($groupDto);
+                 return "Успешное удаление группы";
+            } else {
+                return "Такой группы не существует";
+            }
+        } else {
+            return "Ошибка данных";
+        }
     }
 }

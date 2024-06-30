@@ -146,7 +146,27 @@ class DepartmentController
         }
     }
 
-    public function deleteDepartment(array $request) {
+    /**
+     * @param array $request
+     * @return string
+     * @throws Exception
+     */
+    public function deleteDepartment(array $request): string
+    {
+        $departmentAll = $this->departmentService->getDepartmentAll();
 
+        $departmentDto = new DepartmentDto();
+
+        if (isset($request["departmentId"])) {
+            $departmentDto->departmentId = $request["departmentId"];
+            if (array_search($departmentDto->departmentId, array_column($departmentAll, "departmentId"))) {
+                $this->departmentService->deleteDepartment($departmentDto);
+                return "Успешное удаление кафедры";
+            } else {
+                return "Такой кафедры не существует";
+            }
+        } else {
+            return "Ошибка данных";
+        }
     }
 }

@@ -29,28 +29,28 @@ class GroupRepository
     }
 
     /**
-     * @param GroupDto $groupDto
+     * @param int $groupId
      * @return array|null
      */
-    public function getGroupId(GroupDto $groupDto): ?array
+    public function getGroupId(int $groupId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $group = $queryBuilder->select("g")
             ->from(GroupEntity::class, "g")
-            ->where("g.groupId = " . $groupDto->groupId);
+            ->where("g.groupId = " . $groupId);
         return $group->getQuery()->getArrayResult();
     }
 
     /**
-     * @param GroupDto $groupDto
+     * @param int $departmentId
      * @return array|null
      */
-    public function getGroupByDepartmentId(GroupDto $groupDto): ?array
+    public function getGroupByDepartmentId(int $departmentId): ?array
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("g")
             ->from(GroupEntity::class, "g")
-            ->where("g.departmentId = " . $groupDto->departmentId);
+            ->where("g.departmentId = " . $departmentId);
         return $department->getQuery()->getArrayResult();
     }
 
@@ -90,6 +90,37 @@ class GroupRepository
 
         } catch (Exception $exception) {
             throw new Exception("Ошибка при редактировании группы");
+        }
+    }
+
+    /**
+     * @param int|array $groupId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteGroup(int | array $groupId): void
+    {
+        if (!is_array($groupId)) {
+            try {
+                $group = $this->entityManager->find(GroupEntity::class, $groupId);
+
+                $this->entityManager->remove($group);
+                $this->entityManager->flush();
+
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении группы");
+            }
+        } else {
+            try {
+                foreach ($groupId as $id) {
+                    $group = $this->entityManager->find(GroupEntity::class, $id["groupId"]);
+
+                    $this->entityManager->remove($group);
+                }
+                $this->entityManager->flush();
+            } catch (Exception $exception) {
+                throw new Exception("Ошибка при удалении групп");
+            }
         }
     }
 }

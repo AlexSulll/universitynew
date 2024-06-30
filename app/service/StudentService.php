@@ -29,7 +29,7 @@ class StudentService
      */
     public function getStudentId(StudentDto $studentDto): ?array
     {
-        return $this->studentRepository->getStudentId($studentDto);
+        return $this->studentRepository->getStudentId($studentDto->studentId);
     }
 
     /**
@@ -38,7 +38,7 @@ class StudentService
      */
     public function getStudentByGroupId(StudentDto $studentDto): ?array
     {
-        return $this->studentRepository->getStudentByGroupId($studentDto);
+        return $this->studentRepository->getStudentByGroupId($studentDto->groupId);
     }
 
     /**
@@ -61,8 +61,13 @@ class StudentService
         $this->studentRepository->editStudent($studentDto);
     }
 
+    /**
+     * @param StudentDto $studentDto
+     * @return void
+     * @throws Exception
+     */
     public function deleteStudent(StudentDto $studentDto): void
     {
-        $this->studentRepository->deleteStudent($studentDto);
+        $this->studentRepository->deleteStudent($studentDto->studentId);
     }
 }

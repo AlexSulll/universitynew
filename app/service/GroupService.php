@@ -4,15 +4,18 @@ namespace app\service;
 
 use app\dto\GroupDto;
 use app\repository\GroupRepository;
+use app\repository\StudentRepository;
 use Exception;
 
 class GroupService
 {
     public GroupRepository $groupRepository;
+    public StudentRepository $studentRepository;
 
     public function __construct()
     {
         $this->groupRepository = new GroupRepository();
+        $this->studentRepository = new StudentRepository();
     }
 
     /**
@@ -29,7 +32,7 @@ class GroupService
      */
     public function getGroupId(GroupDto $groupDto): ?array
     {
-        return $this->groupRepository->getGroupId($groupDto);
+        return $this->groupRepository->getGroupId($groupDto->groupId);
     }
 
     /**
@@ -38,7 +41,7 @@ class GroupService
      */
     public function getGroupByDepartmentId(GroupDto $groupDto): ?array
     {
-        return $this->groupRepository->getGroupByDepartmentId($groupDto);
+        return $this->groupRepository->getGroupByDepartmentId($groupDto->departmentId);
     }
 
     /**
@@ -59,5 +62,18 @@ class GroupService
     public function editGroup(GroupDto $groupDto): void
     {
         $this->groupRepository->editGroup($groupDto);
+    }
+
+    /**
+     * @param GroupDto $groupDto
+     * @return void
+     * @throws Exception
+     */
+    public function deleteGroup(GroupDto $groupDto): void
+    {
+        $studentsToDelete = $this->studentRepository->getStudentByGroupId($groupDto->groupId);
+        $this->studentRepository->deleteStudent($studentsToDelete);
+
+        $this->groupRepository->deleteGroup($groupDto->groupId);
     }
 }
