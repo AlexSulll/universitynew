@@ -1,1 +1,0 @@
-UPDATE oasu.department SET name_of_department = :newNameDepartment, id_of_faculties = :newFacultyId WHERE department_id = :departmentId

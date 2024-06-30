@@ -2,19 +2,23 @@
 
 namespace app\service;
 
+use app\dto\DepartmentDto;
 use app\dto\FacultyDto;
+use app\repository\DepartmentRepository;
 use Exception;
-use PDO;
 use app\repository\FacultyRepository;
 
 class FacultyService {
 
-    public PDO $connect;
     public FacultyRepository $facultyRepository;
+    public DepartmentRepository $departmentRepository;
+    public DepartmentService $departmentService;
 
     public function __construct()
     {
         $this->facultyRepository = new FacultyRepository();
+        $this->departmentRepository = new DepartmentRepository();
+        $this->departmentService = new DepartmentService();
     }
 
     /**
@@ -60,8 +64,21 @@ class FacultyService {
         $this->facultyRepository->editFaculty($facultyDto);
     }
 
-    public function deleteFaculty (FacultyDto $facultyDto) {
+    /**
+     * @param FacultyDto $facultyDto
+     * @return void
+     * @throws Exception
+     */
+    public function deleteFaculty(FacultyDto $facultyDto): void
+    {
+        $departmentsToDelete = $this->departmentRepository->getDepartmentByFacultyId($facultyDto->facultyId);
+        foreach ($departmentsToDelete as $department) {
+            $departmentDto = new DepartmentDto();
+            $departmentDto->departmentId = $department["departmentId"];
+            $this->departmentService->deleteDepartment($departmentDto);
+        }
+
+        $this->facultyRepository->deleteFaculty($facultyDto->facultyId);
 
     }
-
 }

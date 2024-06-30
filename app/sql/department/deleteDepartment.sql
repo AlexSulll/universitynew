@@ -1,1 +1,0 @@
-DELETE FROM oasu.department WHERE `department_id`= ?

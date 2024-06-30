@@ -94,33 +94,20 @@ class DepartmentRepository
     }
 
     /**
-     * @param int|array $departmentId
+     * @param int $departmentId
      * @return void
      * @throws Exception
      */
-    public function deleteDepartment(int | array $departmentId): void
+    public function deleteDepartment(int $departmentId): void
     {
-        if (!is_array($departmentId)) {
-            try {
-                $department = $this->entityManager->find(DepartmentEntity::class, $departmentId);
+        try {
+            $department = $this->entityManager->find(DepartmentEntity::class, $departmentId);
 
-                $this->entityManager->remove($department);
-                $this->entityManager->flush();
+            $this->entityManager->remove($department);
+            $this->entityManager->flush();
 
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении кафедры");
-            }
-        } else {
-            try {
-                foreach ($departmentId as $id) {
-                    $department = $this->entityManager->find(DepartmentEntity::class, $id["departmentId"]);
-
-                    $this->entityManager->remove($department);
-                }
-                $this->entityManager->flush();
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении кафедр");
-            }
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при удалении кафедры");
         }
     }
 }

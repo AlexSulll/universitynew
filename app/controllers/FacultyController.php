@@ -111,7 +111,27 @@ class FacultyController {
         }
     }
 
-    public function deleteFaculty(array $request) {
+    /**
+     * @param array $request
+     * @return string
+     * @throws Exception
+     */
+    public function deleteFaculty(array $request): string
+    {
+        $facultyAll = $this->facultyService->getFacultyAll();
 
+        $facultyDto = new FacultyDto();
+
+        if (isset($request["facultyId"])) {
+            $facultyDto->facultyId = $request["facultyId"];
+            if (array_search($facultyDto->facultyId, array_column($facultyAll, "facultyId"))) {
+                $this->facultyService->deleteFaculty($facultyDto);
+                return "Успешное удаление факультета";
+            } else {
+                return "Такого факультета не существует";
+            }
+        } else {
+            return "Ошибка данных";
+        }
     }
 }

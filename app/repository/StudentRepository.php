@@ -94,33 +94,20 @@ class StudentRepository
     }
 
     /**
-     * @param int|array $studentId
+     * @param int $studentId
      * @return void
      * @throws Exception
      */
-    public function deleteStudent(int | array $studentId): void
+    public function deleteStudent(int $studentId): void
     {
-        if (!is_array($studentId)) {
-            try {
-                $student = $this->entityManager->find(StudentEntity::class, $studentId);
+        try {
+            $student = $this->entityManager->find(StudentEntity::class, $studentId);
 
-                $this->entityManager->remove($student);
-                $this->entityManager->flush();
+            $this->entityManager->remove($student);
+            $this->entityManager->flush();
 
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении студента");
-            }
-        } else {
-            try {
-                foreach ($studentId as $id) {
-                    $student = $this->entityManager->find(StudentEntity::class, $id["studentId"]);
-
-                    $this->entityManager->remove($student);
-                }
-                $this->entityManager->flush();
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении студентов");
-            }
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при удалении студента");
         }
     }
 }

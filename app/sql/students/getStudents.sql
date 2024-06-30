@@ -1,1 +1,0 @@
-SELECT * FROM oasu.students WHERE `id_of_group`= ?

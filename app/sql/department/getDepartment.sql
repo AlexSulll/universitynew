@@ -1,1 +1,0 @@
-SELECT * FROM oasu.department WHERE `id_of_faculties`= ?

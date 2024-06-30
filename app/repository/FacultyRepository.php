@@ -78,4 +78,22 @@ class FacultyRepository {
             throw new Exception("Ошибка при редактировании факультета");
         }
     }
+
+    /**
+     * @param int $facultyId
+     * @return void
+     * @throws Exception
+     */
+    public function deleteFaculty(int $facultyId): void
+    {
+        try {
+            $faculty = $this->entityManager->find(FacultyEntity::class, $facultyId);
+
+            $this->entityManager->remove($faculty);
+            $this->entityManager->flush();
+
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при удалении факультета");
+        }
+    }
 }

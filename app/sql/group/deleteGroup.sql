@@ -1,1 +1,0 @@
-DELETE FROM oasu.group WHERE `group_id`= ?

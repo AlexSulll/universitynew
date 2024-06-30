@@ -3,6 +3,7 @@
 namespace app\service;
 
 use app\dto\GroupDto;
+use app\dto\StudentDto;
 use app\repository\GroupRepository;
 use app\repository\StudentRepository;
 use Exception;
@@ -11,11 +12,13 @@ class GroupService
 {
     public GroupRepository $groupRepository;
     public StudentRepository $studentRepository;
+    public StudentService $studentService;
 
     public function __construct()
     {
         $this->groupRepository = new GroupRepository();
         $this->studentRepository = new StudentRepository();
+        $this->studentService = new StudentService();
     }
 
     /**
@@ -72,8 +75,11 @@ class GroupService
     public function deleteGroup(GroupDto $groupDto): void
     {
         $studentsToDelete = $this->studentRepository->getStudentByGroupId($groupDto->groupId);
-        $this->studentRepository->deleteStudent($studentsToDelete);
-
+        foreach ($studentsToDelete as $student) {
+            $studentDto = new StudentDto();
+            $studentDto->studentId = $student["studentId"];
+            $this->studentService->deleteStudent($studentDto);
+        }
         $this->groupRepository->deleteGroup($groupDto->groupId);
     }
 }

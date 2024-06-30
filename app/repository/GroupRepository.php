@@ -94,33 +94,20 @@ class GroupRepository
     }
 
     /**
-     * @param int|array $groupId
+     * @param int $groupId
      * @return void
      * @throws Exception
      */
-    public function deleteGroup(int | array $groupId): void
+    public function deleteGroup(int $groupId): void
     {
-        if (!is_array($groupId)) {
-            try {
-                $group = $this->entityManager->find(GroupEntity::class, $groupId);
+        try {
+            $group = $this->entityManager->find(GroupEntity::class, $groupId);
 
-                $this->entityManager->remove($group);
-                $this->entityManager->flush();
+            $this->entityManager->remove($group);
+            $this->entityManager->flush();
 
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении группы");
-            }
-        } else {
-            try {
-                foreach ($groupId as $id) {
-                    $group = $this->entityManager->find(GroupEntity::class, $id["groupId"]);
-
-                    $this->entityManager->remove($group);
-                }
-                $this->entityManager->flush();
-            } catch (Exception $exception) {
-                throw new Exception("Ошибка при удалении групп");
-            }
+        } catch (Exception $exception) {
+            throw new Exception("Ошибка при удалении группы");
         }
     }
 }

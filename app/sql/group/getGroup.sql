@@ -1,1 +1,0 @@
-SELECT * FROM oasu.group WHERE `id_of_department`= ?
