@@ -19,12 +19,13 @@ class DepartmentEntity {
     #[ORM\Column(name: "name_of_department", type: Types::STRING)]
     private string $departmentName;
 
-    #[ORM\ManyToOne(targetEntity: FacultyEntity::class, inversedBy: "DepartmentEntity")]
+    #[ORM\ManyToOne(targetEntity: FacultyEntity::class, inversedBy: "departments")]
+    #[ORM\JoinColumn(name: "faculty_id")]
     #[ORM\Column(name: "id_of_faculties", type: Types::INTEGER)]
     private int $facultyId;
 
-    #[ORM\OneToMany(mappedBy: "DepartmentEntity", targetEntity: GroupEntity::class)]
-    #[ORM\JoinColumn(name: "groupId")]
+    #[ORM\OneToMany(mappedBy: "departmentId", targetEntity: GroupEntity::class)]
+    #[ORM\JoinColumn(name: "group_id")]
     private Collection $groups;
 
     public function __construct()

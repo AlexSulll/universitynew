@@ -19,8 +19,8 @@ class FacultyEntity {
     #[ORM\Column(name: "name_faculty", type: Types::STRING)]
     private string $facultyName;
 
-    #[ORM\OneToMany(mappedBy: "FacultyEntity", targetEntity: DepartmentEntity::class)]
-    #[ORM\JoinColumn(name: "departmentId")]
+    #[ORM\OneToMany(mappedBy: "facultyId", targetEntity: DepartmentEntity::class)]
+    #[ORM\JoinColumn(name: "department_id")]
     private Collection $departments;
 
     public function __construct()
