@@ -16,6 +16,7 @@ class StudentEntity {
     #[ORM\Column(name: "name_of_student", type: Types::STRING)]
     private string $studentName;
 
+    #[ORM\ManyToOne(targetEntity: GroupEntity::class, inversedBy: "StudentEntity")]
     #[ORM\Column(name: "id_of_group", type: Types::INTEGER)]
     private int $groupId;
 
