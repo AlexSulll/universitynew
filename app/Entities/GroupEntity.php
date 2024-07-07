@@ -17,7 +17,7 @@ class GroupEntity {
     private int $id;
 
     #[ORM\Column(name: "name_of_group", type: Types::STRING)]
-    private string $groupName;
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: DepartmentEntity::class, inversedBy: "groups")]
     #[ORM\JoinColumn(name: "id_of_department", referencedColumnName: "department_id")]
@@ -37,12 +37,12 @@ class GroupEntity {
 
     public function getName(): ?string
     {
-        return $this->groupName;
+        return $this->name;
     }
 
     public function setName(?string $newGroupName): void
     {
-        $this->groupName = $newGroupName;
+        $this->name = $newGroupName;
     }
 
     public function getDepartment(): DepartmentEntity

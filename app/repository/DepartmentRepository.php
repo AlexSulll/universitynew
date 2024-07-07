@@ -4,6 +4,7 @@ namespace app\repository;
 
 use app\dto\DepartmentDto;
 use app\Entities\DepartmentEntity;
+use app\Entities\FacultyEntity;
 use Doctrine\ORM\EntityManager;
 use Exception;
 
@@ -37,7 +38,7 @@ class DepartmentRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("d")
             ->from(DepartmentEntity::class, "d")
-            ->where("d.departmentId = " . $departmentId);
+            ->where("d.id = " . $departmentId);
         return $department->getQuery()->getArrayResult();
     }
 
@@ -50,7 +51,7 @@ class DepartmentRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("d")
             ->from(DepartmentEntity::class, "d")
-            ->where("d.facultyId = " . $facultyId);
+            ->where("d.faculty = " . $facultyId);
         return $department->getQuery()->getArrayResult();
     }
 
@@ -64,8 +65,9 @@ class DepartmentRepository
         $newDepartment = new DepartmentEntity;
 
         try {
+            $faculty = $this->entityManager->find(FacultyEntity::class, $departmentDto->facultyId);
             $newDepartment->setName($departmentDto->departmentName);
-            $newDepartment->setFacultyId($departmentDto->facultyId);
+            $newDepartment->setFaculty($faculty);
             $this->entityManager->persist($newDepartment);
             $this->entityManager->flush();
         } catch (Exception $exception) {
@@ -81,9 +83,10 @@ class DepartmentRepository
     public function editDepartment(DepartmentDto $departmentDto): void
     {
         try {
+            $faculty = $this->entityManager->find(FacultyEntity::class, $departmentDto->facultyId);
             $department = $this->entityManager->find(DepartmentEntity::class, $departmentDto->departmentId);
             $department->setName($departmentDto->departmentName);
-            $department->setFacultyId($departmentDto->facultyId);
+            $department->setFaculty($faculty);
 
             $this->entityManager->persist($department);
             $this->entityManager->flush();

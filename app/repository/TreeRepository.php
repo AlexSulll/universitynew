@@ -23,9 +23,9 @@ class TreeRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $tree = $queryBuilder->select("f", "d", "g", "s")
             ->from(FacultyEntity::class, "f")
-            ->join("f.departments", "d")
-            ->join("d.groups", "g")
-            ->join("g.students", "s");
+            ->leftJoin("f.departments", "d")
+            ->leftJoin("d.groups", "g")
+            ->leftJoin("g.students", "s");
 
         return $tree->getQuery()->getArrayResult();
     }

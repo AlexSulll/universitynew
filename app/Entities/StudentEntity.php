@@ -8,15 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\Table(name: "oasu.students")]
 class StudentEntity {
+
     #[ORM\Id]
     #[ORM\Column(name: "student_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
     private int $id;
 
     #[ORM\Column(name: "name_of_student", type: Types::STRING)]
-    private string $studentName;
+    private string $name;
 
-    #[ORM\ManyToOne(targetEntity: DepartmentEntity::class, inversedBy: "students")]
+    #[ORM\ManyToOne(targetEntity: GroupEntity::class, inversedBy: "students")]
     #[ORM\JoinColumn(name: "id_of_group", referencedColumnName: "group_id")]
     private GroupEntity $group;
 
@@ -27,12 +28,12 @@ class StudentEntity {
 
     public function getName(): ?string
     {
-        return $this->studentName;
+        return $this->name;
     }
 
     public function setName(?string $newStudentName): void
     {
-        $this->studentName = $newStudentName;
+        $this->name = $newStudentName;
     }
 
     public function getGroup(): GroupEntity

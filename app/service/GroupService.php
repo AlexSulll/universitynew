@@ -77,7 +77,7 @@ class GroupService
         $studentsToDelete = $this->studentRepository->getStudentByGroupId($groupDto->groupId);
         foreach ($studentsToDelete as $student) {
             $studentDto = new StudentDto();
-            $studentDto->studentId = $student["studentId"];
+            $studentDto->studentId = $student["id"];
             $this->studentService->deleteStudent($studentDto);
         }
         $this->groupRepository->deleteGroup($groupDto->groupId);

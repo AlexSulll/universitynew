@@ -77,7 +77,7 @@ class DepartmentService
         $groupsToDelete = $this->groupRepository->getGroupByDepartmentId($departmentDto->departmentId);
         foreach ($groupsToDelete as $group) {
             $groupDto = new GroupDto();
-            $groupDto->groupId = $group["groupId"];
+            $groupDto->groupId = $group["id"];
             $this->groupService->deleteGroup($groupDto);
         }
 

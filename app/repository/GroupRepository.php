@@ -3,6 +3,7 @@
 namespace app\repository;
 
 use app\dto\GroupDto;
+use app\Entities\DepartmentEntity;
 use app\Entities\GroupEntity;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -37,7 +38,7 @@ class GroupRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $group = $queryBuilder->select("g")
             ->from(GroupEntity::class, "g")
-            ->where("g.groupId = " . $groupId);
+            ->where("g.id = " . $groupId);
         return $group->getQuery()->getArrayResult();
     }
 
@@ -50,7 +51,7 @@ class GroupRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $department = $queryBuilder->select("g")
             ->from(GroupEntity::class, "g")
-            ->where("g.departmentId = " . $departmentId);
+            ->where("g.department = " . $departmentId);
         return $department->getQuery()->getArrayResult();
     }
 
@@ -64,8 +65,9 @@ class GroupRepository
         $newGroup = new GroupEntity;
 
         try {
+            $department = $this->entityManager->find(DepartmentEntity::class, $groupDto->departmentId);
             $newGroup->setName($groupDto->groupName);
-            $newGroup->setDepartmentId($groupDto->departmentId);
+            $newGroup->setDepartment($department);
             $this->entityManager->persist($newGroup);
             $this->entityManager->flush();
         } catch (Exception $exception) {
@@ -81,9 +83,10 @@ class GroupRepository
     public function editGroup(GroupDto $groupDto): void
     {
         try {
+            $department = $this->entityManager->find(DepartmentEntity::class, $groupDto->departmentId);
             $group = $this->entityManager->find(GroupEntity::class, $groupDto->groupId);
             $group->setName($groupDto->groupName);
-            $group->setDepartmentId($groupDto->departmentId);
+            $group->setDepartment($department);
 
             $this->entityManager->persist($group);
             $this->entityManager->flush();

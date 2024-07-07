@@ -74,7 +74,7 @@ class FacultyService {
         $departmentsToDelete = $this->departmentRepository->getDepartmentByFacultyId($facultyDto->facultyId);
         foreach ($departmentsToDelete as $department) {
             $departmentDto = new DepartmentDto();
-            $departmentDto->departmentId = $department["departmentId"];
+            $departmentDto->departmentId = $department["id"];
             $this->departmentService->deleteDepartment($departmentDto);
         }
 

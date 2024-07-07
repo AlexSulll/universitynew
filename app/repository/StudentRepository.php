@@ -3,6 +3,7 @@
 namespace app\repository;
 
 use app\dto\StudentDto;
+use app\Entities\GroupEntity;
 use app\Entities\StudentEntity;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -37,7 +38,7 @@ class StudentRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $student = $queryBuilder->select("s")
             ->from(StudentEntity::class, "s")
-            ->where("s.studentId = " . $studentId);
+            ->where("s.id = " . $studentId);
         return $student->getQuery()->getArrayResult();
     }
 
@@ -50,7 +51,7 @@ class StudentRepository
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $student = $queryBuilder->select("s")
             ->from(StudentEntity::class, "s")
-            ->where("s.groupId = " . $groupId);
+            ->where("s.group = " . $groupId);
         return $student->getQuery()->getArrayResult();
     }
 
@@ -64,12 +65,13 @@ class StudentRepository
         $newStudent = new StudentEntity;
 
         try {
+            $group = $this->entityManager->find(GroupEntity::class, $studentDto->groupId);
             $newStudent->setName($studentDto->studentName);
-            $newStudent->setGroupId($studentDto->groupId);
+            $newStudent->setGroup($group);
             $this->entityManager->persist($newStudent);
             $this->entityManager->flush();
         } catch (Exception $exception) {
-            throw new Exception("Ошибка при добавлении студента");
+            throw new Exception("Ошибка при добавлении студента $exception");
         }
     }
 
@@ -81,9 +83,10 @@ class StudentRepository
     public function editStudent(StudentDto $studentDto): void
     {
         try {
+            $group = $this->entityManager->find(GroupEntity::class, $studentDto->groupId);
             $student = $this->entityManager->find(StudentEntity::class, $studentDto->studentId);
             $student->setName($studentDto->studentName);
-            $student->setGroupId($studentDto->groupId);
+            $student->setGroup($group);
 
             $this->entityManager->persist($student);
             $this->entityManager->flush();

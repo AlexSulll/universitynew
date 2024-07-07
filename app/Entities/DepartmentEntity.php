@@ -17,7 +17,7 @@ class DepartmentEntity {
     private int $id;
 
     #[ORM\Column(name: "name_of_department", type: Types::STRING)]
-    private string $departmentName;
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: FacultyEntity::class, inversedBy: "departments")]
     #[ORM\JoinColumn(name: "id_of_faculties", referencedColumnName: "faculty_id")]
@@ -37,12 +37,12 @@ class DepartmentEntity {
 
     public function getName(): ?string
     {
-        return $this->departmentName;
+        return $this->name;
     }
 
     public function setName(?string $newDepartmentName): void
     {
-        $this->departmentName = $newDepartmentName;
+        $this->name = $newDepartmentName;
     }
 
     public function getFaculty(): FacultyEntity

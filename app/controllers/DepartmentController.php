@@ -159,7 +159,7 @@ class DepartmentController
 
         if (isset($request["departmentId"])) {
             $departmentDto->departmentId = $request["departmentId"];
-            if (array_search($departmentDto->departmentId, array_column($departmentAll, "departmentId"))) {
+            if (array_search($departmentDto->departmentId, array_column($departmentAll, "id"))) {
                 $this->departmentService->deleteDepartment($departmentDto);
                 return "Успешное удаление кафедры";
             } else {

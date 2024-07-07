@@ -124,7 +124,7 @@ class FacultyController {
 
         if (isset($request["facultyId"])) {
             $facultyDto->facultyId = $request["facultyId"];
-            if (array_search($facultyDto->facultyId, array_column($facultyAll, "facultyId"))) {
+            if (array_search($facultyDto->facultyId, array_column($facultyAll, "id"))) {
                 $this->facultyService->deleteFaculty($facultyDto);
                 return "Успешное удаление факультета";
             } else {

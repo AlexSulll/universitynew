@@ -159,7 +159,7 @@ class GroupController
 
         if (isset($request["groupId"])) {
             $groupDto->groupId = $request["groupId"];
-            if (array_search($groupDto->groupId, array_column($groupAll, "groupId"))) {
+            if (array_search($groupDto->groupId, array_column($groupAll, "id"))) {
                  $this->groupService->deleteGroup($groupDto);
                  return "Успешное удаление группы";
             } else {

@@ -17,7 +17,7 @@ class FacultyEntity {
     private int $id;
 
     #[ORM\Column(name: "name_faculty", type: Types::STRING)]
-    private string $facultyName;
+    private string $name;
 
     #[ORM\OneToMany(mappedBy: "faculty", targetEntity: DepartmentEntity::class)]
     private Collection $departments;
@@ -34,12 +34,12 @@ class FacultyEntity {
 
     public function getName(): ?string
     {
-        return $this->facultyName;
+        return $this->name;
     }
 
-    public function setName(?string $newNameFaculty): void
+    public function setName(?string $newName): void
     {
-        $this->facultyName = $newNameFaculty;
+        $this->name = $newName;
     }
 
     public function getDepartment(): Collection

@@ -159,7 +159,7 @@ class StudentController
 
         if (isset($request["studentId"])) {
             $studentDto->studentId = $request["studentId"];
-            if (array_search($studentDto->studentId, array_column($studentAll, "studentId"))) {
+            if (array_search($studentDto->studentId, array_column($studentAll, "id"))) {
                 $this->studentService->deleteStudent($studentDto);
                 return "Успешное удаление студента";
             } else {

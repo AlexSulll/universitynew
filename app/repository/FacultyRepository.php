@@ -37,7 +37,7 @@ class FacultyRepository {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $faculty = $queryBuilder->select("f")
             ->from(FacultyEntity::class, "f")
-            ->where("f.facultyId = " . $facultyDto->facultyId);
+            ->where("f.id = " . $facultyDto->facultyId);
         return $faculty->getQuery()->getArrayResult();
     }
 
