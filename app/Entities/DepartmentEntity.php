@@ -14,18 +14,16 @@ class DepartmentEntity {
     #[ORM\Id]
     #[ORM\Column(name: "department_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $departmentId;
+    private int $id;
 
     #[ORM\Column(name: "name_of_department", type: Types::STRING)]
     private string $departmentName;
 
     #[ORM\ManyToOne(targetEntity: FacultyEntity::class, inversedBy: "departments")]
-    #[ORM\JoinColumn(name: "faculty_id")]
-    #[ORM\Column(name: "id_of_faculties", type: Types::INTEGER)]
-    private int $facultyId;
+    #[ORM\JoinColumn(name: "id_of_faculties", referencedColumnName: "faculty_id")]
+    private FacultyEntity $faculty;
 
-    #[ORM\OneToMany(mappedBy: "departmentId", targetEntity: GroupEntity::class)]
-    #[ORM\JoinColumn(name: "group_id")]
+    #[ORM\OneToMany(mappedBy: "department", targetEntity: GroupEntity::class)]
     private Collection $groups;
 
     public function __construct()
@@ -34,7 +32,7 @@ class DepartmentEntity {
     }
     public function getId(): ?int
     {
-        return $this->departmentId;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -47,23 +45,24 @@ class DepartmentEntity {
         $this->departmentName = $newDepartmentName;
     }
 
-    public function getFacultyId(): ?int
+    public function getFaculty(): FacultyEntity
     {
-        return $this->facultyId;
+        return $this->faculty;
     }
 
-    public function setFacultyId(?int $newFacultyId): void
+    public function setFaculty(FacultyEntity $newFaculty): void
     {
-        $this->facultyId = $newFacultyId;
+        $newFaculty->addDepartment($this);
+        $this->faculty = $newFaculty;
     }
 
-    public function getGroups(): Collection
+    public function getGroup(): Collection
     {
         return $this->groups;
     }
 
-    public function setGroups(GroupEntity $group): void
+    public function addGroup(GroupEntity $group): void
     {
-        $this->groups->add($group);
+        $this->groups[] = $group;
     }
 }

@@ -14,13 +14,12 @@ class FacultyEntity {
     #[ORM\Id]
     #[ORM\Column(name: "faculty_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $facultyId;
+    private int $id;
 
     #[ORM\Column(name: "name_faculty", type: Types::STRING)]
     private string $facultyName;
 
-    #[ORM\OneToMany(mappedBy: "facultyId", targetEntity: DepartmentEntity::class)]
-    #[ORM\JoinColumn(name: "department_id")]
+    #[ORM\OneToMany(mappedBy: "faculty", targetEntity: DepartmentEntity::class)]
     private Collection $departments;
 
     public function __construct()
@@ -30,7 +29,7 @@ class FacultyEntity {
 
     public function getId(): ?int
     {
-        return $this->facultyId;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -48,8 +47,8 @@ class FacultyEntity {
         return $this->departments;
     }
 
-    public function setDepartment(DepartmentEntity $department): void
+    public function addDepartment(DepartmentEntity $department): void
     {
-        $this->departments->add($department);
+        $this->departments[] = $department;
     }
 }

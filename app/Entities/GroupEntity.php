@@ -14,18 +14,16 @@ class GroupEntity {
     #[ORM\Id]
     #[ORM\Column(name: "group_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $groupId;
+    private int $id;
 
     #[ORM\Column(name: "name_of_group", type: Types::STRING)]
     private string $groupName;
 
     #[ORM\ManyToOne(targetEntity: DepartmentEntity::class, inversedBy: "groups")]
-    #[ORM\JoinColumn(name: "department_id")]
-    #[ORM\Column(name: "id_of_department", type: Types::INTEGER)]
-    private int $departmentId;
+    #[ORM\JoinColumn(name: "id_of_department", referencedColumnName: "department_id")]
+    private DepartmentEntity $department;
 
-    #[ORM\OneToMany(mappedBy: "groupId", targetEntity: StudentEntity::class)]
-    #[ORM\JoinColumn(name: "student_id")]
+    #[ORM\OneToMany(mappedBy: "group", targetEntity: StudentEntity::class)]
     private Collection $students;
 
     public function __construct()
@@ -34,7 +32,7 @@ class GroupEntity {
     }
     public function getId(): ?int
     {
-        return $this->groupId;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -47,14 +45,15 @@ class GroupEntity {
         $this->groupName = $newGroupName;
     }
 
-    public function getDepartmentId(): ?int
+    public function getDepartment(): DepartmentEntity
     {
-        return $this->departmentId;
+        return $this->department;
     }
 
-    public function setDepartmentId(?int $newDepartmentId): void
+    public function setDepartment(DepartmentEntity $newDepartment): void
     {
-        $this->departmentId = $newDepartmentId;
+        $newDepartment->addGroup($this);
+        $this->department = $newDepartment;
     }
 
     public function getStudents(): Collection
@@ -62,8 +61,8 @@ class GroupEntity {
         return $this->students;
     }
 
-    public function setStudents(StudentEntity $student): void
+    public function addStudents(StudentEntity $student): void
     {
-        $this->students->add($student);
+        $this->students[] = $student;
     }
 }

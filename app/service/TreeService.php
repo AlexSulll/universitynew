@@ -13,10 +13,11 @@ class TreeService
         $this->treeRepository = new TreeRepository();
     }
 
-    public function getTree()
+    /**
+     * @return array
+     */
+    public function getTree(): array
     {
-        $dataBase = $this->treeRepository->getTree();
-
-        return $dataBase;
+        return $this->treeRepository->getTree();
     }
 }

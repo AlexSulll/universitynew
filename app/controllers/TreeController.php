@@ -13,7 +13,10 @@ class TreeController
         $this->treeService = new TreeService();
     }
 
-    public function getTree()
+    /**
+     * @return array
+     */
+    public function getTree(): array
     {
         return $this->treeService->getTree();
     }

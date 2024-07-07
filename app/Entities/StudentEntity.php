@@ -11,19 +11,18 @@ class StudentEntity {
     #[ORM\Id]
     #[ORM\Column(name: "student_id", type: Types::INTEGER, nullable: true)]
     #[ORM\GeneratedValue(strategy: "AUTO")]
-    private int $studentId;
+    private int $id;
 
     #[ORM\Column(name: "name_of_student", type: Types::STRING)]
     private string $studentName;
 
-    #[ORM\ManyToOne(targetEntity: GroupEntity::class, inversedBy: "students")]
-    #[ORM\JoinColumn(name: "group_id")]
-    #[ORM\Column(name: "id_of_group", type: Types::INTEGER)]
-    private int $groupId;
+    #[ORM\ManyToOne(targetEntity: DepartmentEntity::class, inversedBy: "students")]
+    #[ORM\JoinColumn(name: "id_of_group", referencedColumnName: "group_id")]
+    private GroupEntity $group;
 
     public function getId(): ?int
     {
-        return $this->studentId;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -36,14 +35,15 @@ class StudentEntity {
         $this->studentName = $newStudentName;
     }
 
-    public function getGroupId(): ?int
+    public function getGroup(): GroupEntity
     {
-        return $this->groupId;
+        return $this->group;
     }
 
-    public function setGroupId(?int $newGroupId): void
+    public function setGroup(GroupEntity $newGroup): void
     {
-        $this->groupId = $newGroupId;
+        $newGroup->addStudents($this);
+        $this->group = $newGroup;
     }
 
 }
