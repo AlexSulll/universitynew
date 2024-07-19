@@ -1,7 +1,5 @@
 <?php
 
-//require_once "bootstrap.php";
-
 header("Content-Type: application/json");
 
 register_shutdown_function(function () {

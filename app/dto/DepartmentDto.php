@@ -4,7 +4,7 @@ namespace app\dto;
 
 class DepartmentDto
 {
-    public ?int $departmentId;
-    public string $departmentName;
+    public ?int $id;
+    public string $name;
     public int $facultyId;
 }

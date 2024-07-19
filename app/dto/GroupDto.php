@@ -4,7 +4,7 @@ namespace app\dto;
 
 class GroupDto
 {
-    public ?int $groupId;
-    public string $groupName;
+    public ?int $id;
+    public string $name;
     public int $departmentId;
 }

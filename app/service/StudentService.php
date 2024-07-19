@@ -3,16 +3,19 @@
 namespace app\service;
 
 use app\dto\StudentDto;
-use app\repository\StudentRepository;
+use app\Entities\GroupEntity;
+use app\Entities\StudentEntity;
+use Doctrine\ORM\EntityManager;
 use Exception;
 
 class StudentService
 {
-    public StudentRepository $studentRepository;
+    public EntityManager $entityManager;
 
     public function __construct()
     {
-        $this->studentRepository = new StudentRepository();
+        require_once dirname(__DIR__) . "/bootstrap.php";
+        $this->entityManager = getEntityManager();
     }
 
     /**
@@ -20,16 +23,23 @@ class StudentService
      */
     public function getStudentsAll(): ?array
     {
-        return $this->studentRepository->getStudentsAll();
+        $students = $this->entityManager->getRepository(StudentEntity::class)->findAll();
+        return $this->extracted($students);
     }
 
     /**
      * @param StudentDto $studentDto
-     * @return array|null
+     * @return StudentDto
      */
-    public function getStudentId(StudentDto $studentDto): ?array
+    public function getStudentById(StudentDto $studentDto): StudentDto
     {
-        return $this->studentRepository->getStudentId($studentDto->studentId);
+        $student = $this->entityManager->getRepository(StudentEntity::class)->find($studentDto->id) ?? sendFail("Такого студента не существует");
+
+        $studentDto->id = $student->getId();
+        $studentDto->name = $student->getName();
+        $studentDto->groupId = $student->getGroup()->getId();
+
+        return $studentDto;
     }
 
     /**
@@ -38,7 +48,9 @@ class StudentService
      */
     public function getStudentByGroupId(StudentDto $studentDto): ?array
     {
-        return $this->studentRepository->getStudentByGroupId($studentDto->groupId);
+        $this->entityManager->getRepository(GroupEntity::class)->find($studentDto->groupId) ?? sendFail("Такой группы не существует");
+        $students = $this->entityManager->getRepository(StudentEntity::class)->findBy(['group' => $studentDto->groupId]);
+        return $this->extracted($students);
     }
 
     /**
@@ -48,7 +60,24 @@ class StudentService
      */
     public function addStudent(StudentDto $studentDto): void
     {
-        $this->studentRepository->addStudent($studentDto);
+        $student = $this->entityManager->getRepository(StudentEntity::class)->findOneBy(['name' => $studentDto->name]);
+
+        $group = $this->entityManager->getRepository(GroupEntity::class)->find($studentDto->groupId) ?? sendFail("Такого группы не существует");
+
+        if ($student !== null) {
+            sendFail("Студент с таким ФИО уже существует");
+        }
+
+        try {
+            $newStudent = new StudentEntity;
+            $newStudent->setName($studentDto->name);
+            $newStudent->setGroup($group);
+            $this->entityManager->persist($newStudent);
+            $this->entityManager->flush();
+            sendFail("Успешное добавление студента");
+        } catch (Exception $exception) {
+            sendFail("Ошибка при добавлении студента");
+        }
     }
 
     /**
@@ -58,7 +87,29 @@ class StudentService
      */
     public function editStudent(StudentDto $studentDto): void
     {
-        $this->studentRepository->editStudent($studentDto);
+        $student = $this->entityManager->find(StudentEntity::class, $studentDto->id) ?? sendFail('Такой студент не существует');
+
+        $group = $this->entityManager->find(GroupEntity::class, $studentDto->groupId) ?? sendFail("Группа не найдена");
+
+        $studentExist = $this->entityManager->getRepository(StudentEntity::class)->findOneBy([
+            'name' => $studentDto->name,
+            'group' => $studentDto->groupId
+        ]);
+
+        if ($studentExist !== null) {
+            sendFail("Такое название уже сущесвтвует");
+        }
+
+        try {
+            $student->setName($studentDto->name);
+            $student->setGroup($group);
+
+            $this->entityManager->persist($student);
+            $this->entityManager->flush();
+            sendFail("Успешное изменение студента");
+        } catch (Exception $exception) {
+            sendFail("Ошибка при редактировании студента");
+        }
     }
 
     /**
@@ -68,6 +119,29 @@ class StudentService
      */
     public function deleteStudent(StudentDto $studentDto): void
     {
-        $this->studentRepository->deleteStudent($studentDto->studentId);
+        $student = $this->entityManager->find(StudentEntity::class, $studentDto->id) ?? sendFail("Такого студента не существует");
+        try {
+            $this->entityManager->remove($student);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            sendFail("Ошибка при удалении студента");
+        }
+    }
+
+    /**
+     * @param array $students
+     * @return array
+     */
+    public function extracted(array $students): array
+    {
+        $studentDtos = [];
+        foreach ($students as $student) {
+            $studentDto = new StudentDto();
+            $studentDto->id = $student->getId();
+            $studentDto->name = $student->getName();
+            $studentDto->groupId = $student->getGroup()->getId();
+            $studentDtos[] = $studentDto;
+        }
+        return $studentDtos;
     }
 }

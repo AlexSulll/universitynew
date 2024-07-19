@@ -22,3 +22,9 @@ function getEntityManager(): EntityManager
     $config = Setup::createAttributeMetadataConfiguration($paths, true);
     return EntityManager::create($connection, $config);
 }
+
+function sendFail(string $message): void
+{
+    echo json_encode($message);
+    die();
+}

@@ -6,7 +6,8 @@ use app\dto\FacultyDto;
 use app\service\FacultyService;
 use Exception;
 
-class FacultyController {
+class FacultyController
+{
     public FacultyService $facultyService;
 
     public function __construct()
@@ -24,114 +25,47 @@ class FacultyController {
 
     /**
      * @param array $request
-     * @return array|string
+     * @return FacultyDto
      */
-    public function getFacultyId(array $request): array | string
+    public function getFacultyById(array $request): FacultyDto
     {
-
         $facultyDto = new FacultyDto();
-
-        if (isset($request["facultyId"])) {
-            $facultyDto->facultyId = $request["facultyId"];
-            $faculty = $this->facultyService->getFacultyId($facultyDto);
-            if ($faculty) {
-                return $faculty;
-            } else {
-                return "Такого факультета не существует";
-            }
-        } else {
-            return "Ошибка данных";
-        }
+        $facultyDto->id = $request["facultyId"];
+        return $this->facultyService->getFacultyById($facultyDto);
     }
 
     /**
      * @param array $request
-     * @return string
-     * @throws Exception
+     * @return void
      */
-    public function addFaculty(array $request): string
+    public function addFaculty(array $request): void
     {
-
-        $facultiesAll = $this->facultyService->getFacultyAll();
-
         $facultyDto = new FacultyDto();
-
-        if (isset($request["facultyName"])) {
-            if (preg_match("/^[А-яЁё -]*$/u", $request["facultyName"])) {
-                $facultyDto->facultyName = $request["facultyName"];
-                if (!array_search($facultyDto->facultyName, array_column($facultiesAll, "facultyName"))) {
-                    $this->facultyService->addFaculty($facultyDto);
-                    return "Успешное добавление факультета";
-                } else {
-                    return "Факультет с таким названием уже существует";
-                }
-            } else {
-                return "Ошибка при проверке данных";
-            }
-        } else {
-            return "Ошибка данных";
-        }
+        $facultyDto->name = $request["facultyName"];
+        $this->facultyService->addFaculty($facultyDto);
     }
 
     /**
      * @param array $request
-     * @return string
-     * @throws Exception
+     * @return void
      */
-    public function editFaculty(array $request): string
+    public function editFaculty(array $request): void
     {
-
-        $faculties = $this->facultyService->getFacultyAll();
-
         $facultyDto = new FacultyDto();
-
-        if (isset($request["facultyId"], $request["newNameFaculty"])) {
-            if (preg_match("/^[А-яЁё -]*$/u", $request["newNameFaculty"]) && preg_match("/^[0-9]*$/", $request["facultyId"])) {
-                $facultyDto->facultyName = $request["newNameFaculty"];
-                $facultyDto->facultyId = $request["facultyId"];
-                $getFaculty = $this->facultyService->getFacultyId($facultyDto);
-                if ($getFaculty) {
-                    if (!array_search($request["newNameFaculty"], array_column($faculties, "facultyName"))) {
-
-                        $this->facultyService->editFaculty($facultyDto);
-
-                        return "Успешное изменение факультета";
-
-                    } else {
-                        return "Факультет с таким названием уже существует";
-                    }
-                } else {
-                    return "Такого факультета не существует";
-                }
-            } else {
-                return "Ошибка при проверке данных";
-            }
-        } else {
-            return "Ошибка данных";
-        }
+        $facultyDto->id = $request["facultyId"];
+        $facultyDto->name = $request["newNameFaculty"];
+        $this->facultyService->editFaculty($facultyDto);
     }
 
     /**
      * @param array $request
-     * @return string
+     * @return void
      * @throws Exception
      */
-    public function deleteFaculty(array $request): string
+    public function deleteFaculty(array $request): void
     {
-        $facultyAll = $this->facultyService->getFacultyAll();
-
         $facultyDto = new FacultyDto();
-
-        if (isset($request["facultyId"])) {
-            $facultyDto->facultyId = $request["facultyId"];
-            if (array_search($facultyDto->facultyId, array_column($facultyAll, "id"))) {
-                $this->facultyService->deleteFaculty($facultyDto);
-                return "Успешное удаление факультета";
-            } else {
-                return "Такого факультета не существует";
-            }
-        } else {
-            return "Ошибка данных";
-        }
+        $facultyDto->id = $request["facultyId"];
+        $this->facultyService->deleteFaculty($facultyDto);
     }
 }
