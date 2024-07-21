@@ -2,9 +2,7 @@
 
 namespace app\dto;
 
-class StudentDto
+class StudentDto extends IdNameDto
 {
-    public ?int $id;
-    public string $name;
     public int $groupId;
 }

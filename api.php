@@ -21,4 +21,4 @@ $method = $_GET["method"];
 $class = "app\\controllers\\" . ucfirst($action) . "Controller";
 $controller = new $class();
 $response = $controller->$method($_REQUEST);
-echo json_encode($response, JSON_UNESCAPED_UNICODE);
+echo json_encode(['success' => true, 'rows' => $response], JSON_UNESCAPED_UNICODE);

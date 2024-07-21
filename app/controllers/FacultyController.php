@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\dto\FacultyDto;
+use app\dto\IdNameDto;
 use app\service\FacultyService;
 use Exception;
 
@@ -25,11 +25,11 @@ class FacultyController
 
     /**
      * @param array $request
-     * @return FacultyDto
+     * @return IdNameDto
      */
-    public function getFacultyById(array $request): FacultyDto
+    public function getFacultyById(array $request): IdNameDto
     {
-        $facultyDto = new FacultyDto();
+        $facultyDto = new IdNameDto();
         $facultyDto->id = $request["facultyId"];
         return $this->facultyService->getFacultyById($facultyDto);
     }
@@ -40,7 +40,7 @@ class FacultyController
      */
     public function addFaculty(array $request): void
     {
-        $facultyDto = new FacultyDto();
+        $facultyDto = new IdNameDto();
         $facultyDto->name = $request["facultyName"];
         $this->facultyService->addFaculty($facultyDto);
     }
@@ -48,10 +48,11 @@ class FacultyController
     /**
      * @param array $request
      * @return void
+     * @throws Exception
      */
     public function editFaculty(array $request): void
     {
-        $facultyDto = new FacultyDto();
+        $facultyDto = new IdNameDto();
         $facultyDto->id = $request["facultyId"];
         $facultyDto->name = $request["newNameFaculty"];
         $this->facultyService->editFaculty($facultyDto);
@@ -64,7 +65,7 @@ class FacultyController
      */
     public function deleteFaculty(array $request): void
     {
-        $facultyDto = new FacultyDto();
+        $facultyDto = new IdNameDto();
         $facultyDto->id = $request["facultyId"];
         $this->facultyService->deleteFaculty($facultyDto);
     }

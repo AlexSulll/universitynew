@@ -25,6 +25,6 @@ function getEntityManager(): EntityManager
 
 function sendFail(string $message): void
 {
-    echo json_encode($message);
+    echo json_encode(['success' => false, 'rows' => $message]);
     die();
 }

@@ -61,6 +61,7 @@ class DepartmentController
     /**
      * @param array $request
      * @return void
+     * @throws Exception
      */
     public function editDepartment(array $request): void
     {

@@ -28,7 +28,7 @@ class DepartmentService
     public function getDepartmentAll(): ?array
     {
         $departments = $this->entityManager->getRepository(DepartmentEntity::class)->findAll();
-        return $this->extracted($departments);
+        return $this->toDepartmentDto($departments);
     }
 
     /**
@@ -54,7 +54,7 @@ class DepartmentService
     {
         $this->entityManager->getRepository(FacultyEntity::class)->find($departmentDto->facultyId) ?? sendFail("Такого факультета не существует");
         $departments = $this->entityManager->getRepository(DepartmentEntity::class)->findBy(['faculty' => $departmentDto->facultyId]);
-        return $this->extracted($departments);
+        return $this->toDepartmentDto($departments);
     }
 
     /**
@@ -140,9 +140,9 @@ class DepartmentService
 
     /**
      * @param array $departments
-     * @return array
+     * @return DepartmentDto[]
      */
-    public function extracted(array $departments): array
+    public function toDepartmentDto(array $departments): array
     {
         $departmentDtos = [];
         foreach ($departments as $department) {

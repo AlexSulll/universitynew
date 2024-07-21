@@ -3,7 +3,7 @@
 namespace app\service;
 
 use app\dto\DepartmentDto;
-use app\dto\FacultyDto;
+use app\dto\IdNameDto;
 use app\Entities\DepartmentEntity;
 use app\Entities\FacultyEntity;
 use Doctrine\ORM\EntityManager;
@@ -29,7 +29,7 @@ class FacultyService
         $faculties = $this->entityManager->getRepository(FacultyEntity::class)->findAll();
         $facultyDtos = [];
         foreach ($faculties as $faculty) {
-            $facultyDto = new FacultyDto();
+            $facultyDto = new IdNameDto();
             $facultyDto->id = $faculty->getId();
             $facultyDto->name = $faculty->getName();
             $facultyDtos[] = $facultyDto;
@@ -38,10 +38,10 @@ class FacultyService
     }
 
     /**
-     * @param FacultyDto $facultyDto
-     * @return FacultyDto
+     * @param IdNameDto $facultyDto
+     * @return IdNameDto
      */
-    public function getFacultyById(FacultyDto $facultyDto): FacultyDto
+    public function getFacultyById(IdNameDto $facultyDto): IdNameDto
     {
         $faculty = $this->entityManager->getRepository(FacultyEntity::class)->find($facultyDto->id) ?? sendFail("Такого факультета не существует");
 
@@ -52,10 +52,10 @@ class FacultyService
     }
 
     /**
-     * @param FacultyDto $facultyDto
+     * @param IdNameDto $facultyDto
      * @return void
      */
-    public function addFaculty(FacultyDto $facultyDto): void
+    public function addFaculty(IdNameDto $facultyDto): void
     {
         $faculty = $this->entityManager->getRepository(FacultyEntity::class)->findOneBy(['name' => $facultyDto->name]);
 
@@ -68,18 +68,17 @@ class FacultyService
             $newFaculty->setName($facultyDto->name);
             $this->entityManager->persist($newFaculty);
             $this->entityManager->flush();
-            sendFail("Успешное добавление факультета");
         } catch (Exception $exception) {
             sendFail("Ошибка при добавлении факультета");
         }
     }
 
     /**
-     * @param FacultyDto $facultyDto
+     * @param IdNameDto $facultyDto
      * @return void
      * @throws Exception
      */
-    public function editFaculty(FacultyDto $facultyDto): void
+    public function editFaculty(IdNameDto $facultyDto): void
     {
         $faculty = $this->entityManager->find(FacultyEntity::class, $facultyDto->id) ?? sendFail("Такого факультета не существует");
         $facultyExist = $this->entityManager->getRepository(FacultyEntity::class)->findOneBy(['name' => $facultyDto->name]);
@@ -100,11 +99,11 @@ class FacultyService
     }
 
     /**
-     * @param FacultyDto $facultyDto
+     * @param IdNameDto $facultyDto
      * @return void
      * @throws Exception
      */
-    public function deleteFaculty(FacultyDto $facultyDto): void
+    public function deleteFaculty(IdNameDto $facultyDto): void
     {
         $departmentsToDelete = $this->entityManager->getRepository(DepartmentEntity::class)->findBy(['faculty' => $facultyDto->id]);
         foreach ($departmentsToDelete as $department) {

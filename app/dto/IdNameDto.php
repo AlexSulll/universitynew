@@ -2,9 +2,8 @@
 
 namespace app\dto;
 
-class FacultyDto
+class IdNameDto
 {
     public ?int $id;
     public string $name;
-
 }
