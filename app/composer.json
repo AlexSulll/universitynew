@@ -1,0 +1,22 @@
+{
+  "require": {
+    "php": "^8.2",
+    "doctrine/orm": "2.11.0",
+    "doctrine/dbal": "^3.2",
+    "symfony/yaml": "^5.4",
+    "symfony/cache": "^5.4",
+    "doctrine/annotations": "^1.14",
+    "symfony/orm-pack": "^2.4",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "./",
+      "app\\Entities\\": "Entities"
+    }
+  },
+  "require-dev": {
+    "symfony/maker-bundle": "^1.50",
+    "phpunit/phpunit": "^10.5"
+  }
+}
